@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mirc.ssm.dao.IRoleDao">
+    
+    
+    <resultMap id="roleMap" type="Role">
+        <id property="id" column="id"/>
+        <result property="roleName" column="roleName"/>
+        <result property="roleDesc" column="roleDesc"/>
+        <collection property="permissions" javaType="java.util.List" ofType="Permission"
+                    column="id" select="com.mirc.ssm.dao.IPermissionDao.findPermissionByRoleId"/>
+    </resultMap>
+
+    <select id="findRoleByUserId" parameterType="string" resultMap="roleMap">
+        SELECT *FROM role WHERE id in
+        ( SELECT roleId FROM users_role WHERE userid=#{usersId})
+    </select>
+
+    <!--查询所有-->
+    <select id="findAll" resultType="Role">
+        SELECT * from role
+    </select>
+
+    <!--添加角色-->
+    <select id="save" parameterType="role">
+        INSERT into role(roleName, roleDesc) VALUES (#{roleName},#{roleDesc})
+    </select>
+
+</mapper>

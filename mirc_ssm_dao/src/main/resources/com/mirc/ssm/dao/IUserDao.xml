@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mirc.ssm.dao.IUserDao">
+
+    <!--通过用户名查询用户和角色信息-->
+    <resultMap id="userInfo" type="UserInfo">
+        <id property="id" column="id"/>
+        <result property="email" column="email"/>
+        <result property="username" column="username"/>
+        <result property="password" column="PASSWORD"/>
+        <result property="phoneNum" column="phoneNum"/>
+        <result property="status" column="STATUS"/>
+        <collection property="roles" javaType="java.util.List" ofType="Role" column="id"
+                    select="com.mirc.ssm.dao.IRoleDao.findRoleByUserId"/>
+    </resultMap>
+
+    <select id="findByUsername" parameterType="string" resultMap="userInfo">
+      SELECT * FROM users WHERE username=#{username}
+    </select>
+
+    <!--查询所有用户-->
+    <select id="findAllUsers" resultType="UserInfo">
+        SELECT * from users
+    </select>
+
+    <!--保存用户-->
+    <select id="saveUser" parameterType="UserInfo">
+      INSERT INTO users (username, email, password, phoneNum, status)
+      VALUES (#{username}, #{email}, #{password}, #{phoneNum}, #{status})
+    </select>
+
+    <!--用户详情-->
+    <resultMap id="UserInfo1" type="UserInfo">
+        <result property="email" column="email"/>
+        <result property="username" column="username"/>
+        <result property="password" column="PASSWORD"/>
+        <result property="phoneNum" column="phoneNum"/>
+        <result property="status" column="STATUS"/>
+        <collection property="roles" javaType="java.util.List" ofType="Role" column="id"
+                    select="com.mirc.ssm.dao.IRoleDao.findRoleByUserId"/>
+
+    </resultMap>
+
+
+    <select id="findById" parameterType="string" resultMap="UserInfo1">
+        SELECT * from users WHERE id=#{userId}
+    </select>
+
+</mapper>

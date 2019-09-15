@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mirc.ssm.dao.ITravellerDao">
+    <select id="findByOrdersId" parameterType="string"  resultType="Traveller">
+        SELECT * FROM TRAVELLER WHERE id in
+
+        (SELECT ot.travellerid
+
+        FROM ORDER_TRAVELLER ot
+
+        WHERE ot.orderId = #{id})
+
+    </select>
+</mapper>
