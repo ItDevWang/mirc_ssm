@@ -9,4 +9,13 @@
         SELECT * FROM permission WHERE id in
         (SELECT permissionId FROM role_permission WHERE roleId = #{roleId} )
     </select>
+
+    <select id="findAll" resultType="Permission">
+        SELECT * FROM permission
+    </select>
+
+    <select id="save" parameterType="Permission">
+        INSERT INTO permission(permissionName, url) VALUES (#{permissionName}, #{url})
+    </select>
+
 </mapper>
