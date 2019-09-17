@@ -20,6 +20,11 @@ public class RoleServiceImpl implements IRoleService {
     }
 
     @Override
+    public Role findRoleById(String roleId) throws Exception {
+        return roleDao.findRoleById(roleId);
+    }
+
+    @Override
     public void save(Role role) throws Exception{
         roleDao.save(role);
     }
@@ -27,5 +32,32 @@ public class RoleServiceImpl implements IRoleService {
     @Override
     public List<Permission> findPermissionByRoleId(String roleId) throws Exception{
         return roleDao.findPermissionByRoleId(roleId);
+    }
+
+    @Override
+    public List<Role> findOtherRole(String userId) throws Exception {
+        return roleDao.findOtherRole(userId);
+    }
+
+    /**
+     * 删除角色
+     * @param roleId
+     * @throws Exception
+     */
+    @Override
+    public void deleteRole(String roleId) throws Exception {
+        roleDao.deleteRole(roleId);
+    }
+
+    @Override
+    public List<Permission> findOtherPermissionByRoleId(String roleId) throws Exception {
+        return roleDao.findOtherPermissionByRoleId(roleId);
+    }
+
+    @Override
+    public void addPermissionToRole(String roleid, String[] permissionIds) throws Exception {
+        for (String permissionId : permissionIds) {
+            roleDao.addPermissionToRole(roleid, permissionId);
+        }
     }
 }

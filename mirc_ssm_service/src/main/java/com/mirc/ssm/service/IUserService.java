@@ -33,4 +33,10 @@ public interface IUserService extends UserDetailsService{
      */
     UserInfo findById(String userId) throws Exception;
 
+    /**
+     * 添加角色和用户关联
+     * @param userId
+     * @param roleIds
+     */
+    void addRoleToUser(String userId, String[] roleIds) throws Exception;
 }
