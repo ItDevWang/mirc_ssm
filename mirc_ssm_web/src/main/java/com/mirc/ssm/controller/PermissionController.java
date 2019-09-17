@@ -33,6 +33,12 @@ public class PermissionController {
         return mv;
     }
 
+    /**
+     * 添加资源
+     * @param permission
+     * @return
+     * @throws Exception
+     */
     @RequestMapping("/save.do")
     public String save(Permission permission) throws Exception{
         permissionService.save(permission);

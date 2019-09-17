@@ -1,7 +1,9 @@
 package com.mirc.ssm.controller;
 
 import com.mirc.ssm.dao.IUserDao;
+import com.mirc.ssm.domain.Role;
 import com.mirc.ssm.domain.UserInfo;
+import com.mirc.ssm.service.IRoleService;
 import com.mirc.ssm.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,9 @@ public class UserController {
 
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private IRoleService roleService;
 
     /**
      * 查询所有用户
@@ -65,5 +70,37 @@ public class UserController {
         return mv;
 
     }
+
+    /**
+     * 用户以及可以添加的角色
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/findUserByIdAndAllRole.do")
+    public ModelAndView findUserByIdAndAllRole(@RequestParam(value = "id", required = true) String userId) throws Exception {
+        ModelAndView mv = new ModelAndView();
+        UserInfo userInfo = userService.findById(userId);
+        List<Role> otherRoleList = roleService.findOtherRole(userId);
+        mv.addObject("user", userInfo);
+        mv.addObject("roleList", otherRoleList);
+        mv.setViewName("user-role-add");
+        return mv;
+    }
+
+    /**
+     * 注意： jsp页面需要校验，当没有勾选任何角色时
+     * @param userId
+     * @param roleIds
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/addRoleToUser.do")
+    public String addRoleToUser(@RequestParam(value = "userId", required = true) String userId,
+                                @RequestParam(value = "ids", required = true) String[] roleIds ) throws Exception {
+        userService.addRoleToUser(userId, roleIds);
+        return "redirect:findAll.do";
+    }
+
 
 }

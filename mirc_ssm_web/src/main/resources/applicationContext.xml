@@ -13,7 +13,92 @@
 	http://www.springframework.org/schema/tx
 	http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <import resource="classpath:spring/applicationContext-service.xml"/>
-    <import resource="classpath:spring/applicationContext-dao.xml"/>
+
+    <!--dao配置-->
+    <context:property-placeholder location="classpath:db.properties"></context:property-placeholder>
+
+    <!--配置连接池-->
+    <bean id="datasource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="${jdbc.driver}" />
+        <property name="jdbcUrl" value="${jdbc.url}" />
+        <property name="user" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+    </bean>
+
+    <!--用IOC创建sqlSessionFactory-->
+    <bean id="SqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="datasource"/>
+        <!--给实体类包起别名-->
+        <property name="typeAliasesPackage" value="com.mirc.ssm.domain"/>
+        <!--传入PageHelper的插件-->
+        <!--传入PageHelper的插件-->
+        <property name="plugins">
+            <array>
+                <!--传入插件的对象-->
+                <bean class="com.github.pagehelper.PageInterceptor">
+                    <property name="properties">
+                        <props>
+                            <prop key="helperDialect">oracle</prop>
+                            <prop key="reasonable">true</prop>
+                        </props>
+                    </property>
+                </bean>
+
+            </array>
+        </property>
+
+    </bean>
+
+    <!--扫描dao包，加载映射类以及配置文件-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.mirc.ssm.dao"/>
+    </bean>
+    <!--dao配置/-->
+
+
+    <!--service配置-->
+    <!-- 开启注解扫描，管理service -->
+    <context:component-scan base-package="com.mirc.ssm.service"/>
+
+    <!--aop-->
+    <!--配置事务管理器-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="datasource"/>
+    </bean>
+
+    <!--配置事务的通知-->
+    <tx:advice id="advice">
+        <tx:attributes>
+            <tx:method name="save*" propagation="REQUIRED"/>
+            <tx:method name="update*" propagation="REQUIRED"/>
+            <tx:method name="delete*" propagation="REQUIRED"/>
+            <tx:method name="find" read-only="true"/>
+            <tx:method name="*" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+
+
+    <!--配置切面bean-->
+    <bean id="logAop" class="com.mirc.ssm.controller.LogAop"></bean>
+
+
+    <!--配置切面-->
+    <aop:config>
+
+        <aop:pointcut id="pointcut" expression="execution(* com.mirc.ssm.service.impl.*.*(..))"/>
+        <aop:pointcut id="controllerPntCut" expression="execution(* com.mirc.ssm.controller.*.*(..))"/>
+
+        <!--事务切面-->
+        <aop:advisor advice-ref="advice" pointcut-ref="pointcut"/>
+
+        <!--日志切面-->
+        <aop:aspect ref="logAop">
+            <!--
+                aop:before，为前置增强，method属性，指定增强方法，pointcut属性，定义切点表达式
+            -->
+            <aop:before method="doBefore" pointcut-ref="controllerPntCut"/>
+            <aop:after method="doAfter" pointcut-ref="controllerPntCut"/>
+        </aop:aspect>
+    </aop:config>
 
 </beans>
