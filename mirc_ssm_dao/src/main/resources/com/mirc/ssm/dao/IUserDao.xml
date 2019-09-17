@@ -34,6 +34,7 @@
 
     <!--用户详情-->
     <resultMap id="UserInfo1" type="UserInfo">
+        <id property="id" column="id" />
         <result property="email" column="email"/>
         <result property="username" column="username"/>
         <result property="password" column="PASSWORD"/>
@@ -47,6 +48,12 @@
 
     <select id="findById" parameterType="string" resultMap="UserInfo1">
         SELECT * from users WHERE id=#{userId}
+    </select>
+
+
+    <!--用户和角色的关联-->
+    <select id="addRoleToUser">
+        insert into users_role(userId, roleId) VALUES (#{userId}, #{roleId})
     </select>
 
 </mapper>

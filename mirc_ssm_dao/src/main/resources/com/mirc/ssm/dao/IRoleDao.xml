@@ -24,9 +24,36 @@
         SELECT * from role
     </select>
 
+    <!--根据id查询角色-->
+    <select id="findRoleById" parameterType="string" resultMap="roleMap">
+      SELECT * FROM role WHERE id=#{roleId}
+    </select>
+
     <!--添加角色-->
     <select id="save" parameterType="role">
         INSERT into role(roleName, roleDesc) VALUES (#{roleName},#{roleDesc})
+    </select>
+
+    <!--查询可以添加的角色-->
+    <select id="findOtherRole" parameterType="string" resultType="Role">
+        SELECT * from role where id NOT in
+        (SELECT roleId From users_role WHERE userId=#{userId})
+    </select>
+
+    <!--删除角色-->
+    <select id="deleteRole" parameterType="string">
+      DELETE FROM role WHERE id=#{roleId}
+    </select>
+
+    <!--查询可添加的权限-->
+    <select id="findOtherPermissionByRoleId" parameterType="string" resultType="permission">
+        SELECT * FROM permission WHERE id NOT IN
+        (SELECT permissionId FROM role_permission WHERE roleId=#{roleId})
+    </select>
+
+    <!--为用户添加权限-->
+    <select id="addPermissionToRole">
+        INSERT INTO role_permission(permissionId, roleId) VALUES (#{permissionId}, #{roleId})
     </select>
 
 </mapper>

@@ -1,6 +1,7 @@
 package com.mirc.ssm.dao;
 
 import com.mirc.ssm.domain.UserInfo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -40,4 +41,11 @@ public interface IUserDao {
      * @throws Exception
      */
     UserInfo findById(String userId) throws Exception;
+
+    /**
+     * 用户和角色的关联
+     * @param userId
+     * @param roleId
+     */
+    void addRoleToUser(@Param("userId") String userId, @Param("roleId") String roleId);
 }
