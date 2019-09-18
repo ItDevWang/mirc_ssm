@@ -22,4 +22,16 @@ public interface IPermissionService {
      * @throws Exception
      */
     void save(Permission permission) throws Exception;
+
+    /**
+     * 资源详情
+     * @param permissionId
+     */
+    Permission findById(String permissionId) throws Exception;
+
+    /**
+     * 删除权限
+     * @param permissionId
+     */
+    void deletePermission(String permissionId) throws Exception;
 }

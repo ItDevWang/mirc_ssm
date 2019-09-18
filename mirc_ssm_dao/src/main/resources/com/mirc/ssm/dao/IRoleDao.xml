@@ -19,6 +19,12 @@
         ( SELECT roleId FROM users_role WHERE userid=#{usersId})
     </select>
 
+    <select id="findUserByRoleId" parameterType="string" resultType="userInfo">
+        SELECT * FROM users WHERE ID IN
+        (SELECT userId FROM USERS_ROLE WHERE roleid=#{id})
+    </select>
+
+
     <!--查询所有-->
     <select id="findAll" resultType="Role">
         SELECT * from role
@@ -30,9 +36,9 @@
     </select>
 
     <!--添加角色-->
-    <select id="save" parameterType="role">
+    <insert id="save" parameterType="role">
         INSERT into role(roleName, roleDesc) VALUES (#{roleName},#{roleDesc})
-    </select>
+    </insert>
 
     <!--查询可以添加的角色-->
     <select id="findOtherRole" parameterType="string" resultType="Role">
@@ -41,9 +47,9 @@
     </select>
 
     <!--删除角色-->
-    <select id="deleteRole" parameterType="string">
+    <delete id="deleteRole" parameterType="string">
       DELETE FROM role WHERE id=#{roleId}
-    </select>
+    </delete>
 
     <!--查询可添加的权限-->
     <select id="findOtherPermissionByRoleId" parameterType="string" resultType="permission">
@@ -52,8 +58,23 @@
     </select>
 
     <!--为用户添加权限-->
-    <select id="addPermissionToRole">
+    <insert id="addPermissionToRole">
         INSERT INTO role_permission(permissionId, roleId) VALUES (#{permissionId}, #{roleId})
+    </insert>
+
+    <!--以权限id查用户-->
+    <resultMap id="roleAndUserInfo" type="Role">
+        <id property="id" column="id"/>
+        <result property="roleName" column="roleName"/>
+        <result property="roleDesc" column="roleDesc"/>
+        <collection property="userInfos" column="id" javaType="java.util.List" ofType="userInfo"
+                    select="com.mirc.ssm.dao.IRoleDao.findUserByRoleId" />
+    </resultMap>
+    <select id="findRoleByPermissionId" parameterType="string" resultMap="roleAndUserInfo">
+      SELECT * FROM ROLE WHERE ID IN
+      (SELECT ROLEID FROM role_permission WHERE permissionId=#{id} )
     </select>
+
+
 
 </mapper>

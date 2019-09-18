@@ -1,5 +1,6 @@
 package com.mirc.ssm.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.mirc.ssm.dao.IProductDao;
 import com.mirc.ssm.domain.Product;
 import com.mirc.ssm.service.IProductService;
@@ -18,7 +19,8 @@ public class ProductServiceImpl implements IProductService {
     private IProductDao productDao = null;
 
     @Override
-    public List<Product> findAll() throws Exception {
+    public List<Product> findAll(Integer page, Integer size) throws Exception {
+        PageHelper.startPage(page, size);
         return productDao.findAll();
     }
 

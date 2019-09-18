@@ -266,13 +266,18 @@
                         <div class="pull-left">
                             <div class="form-group form-inline">
                                 总共${pageInfo.pages} 页，共${pageInfo.total} 条数据。 每页
-                            <select class="form-control" id="changePageSize" onchange="changePageSize()">
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                            </select> 条
+                                <select class="form-control" id="changePageSize" onchange="changePageSize()">
+                                    <c:forEach begin="1" end="${pageInfo.total}" var="item">
+                                        <c:choose>
+                                            <c:when test="${item == pageInfo.pageSize}">
+                                                <option selected='select'>${item}</option>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <option>${item}</option>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </c:forEach>
+                                </select> 条
                             </div>
                         </div>
 
@@ -400,9 +405,7 @@
     <script
             src="${pageContext.request.contextPath}/plugins/bootstrap-datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>
     <script>
-        
-        
-        
+
         function changePageSize() {
             // 获取下拉框的值
             var pageSize = $("#changePageSize").val();
@@ -412,8 +415,7 @@
 
             $("#changePageSize").val(pageSize);
         }
-        
-        
+
         $(document).ready(function() {
             // 选择框
             $(".select2").select2();

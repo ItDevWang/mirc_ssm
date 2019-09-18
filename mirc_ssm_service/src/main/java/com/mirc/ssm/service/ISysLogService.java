@@ -17,6 +17,7 @@ public interface ISysLogService {
      */
     public void save(SysLog syslog) throws Exception;
 
+
     /**
      * 查询所有
      * @return

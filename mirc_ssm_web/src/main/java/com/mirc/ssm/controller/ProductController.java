@@ -1,10 +1,12 @@
 package com.mirc.ssm.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.mirc.ssm.domain.Product;
 import com.mirc.ssm.service.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -26,11 +28,14 @@ public class ProductController {
     }
 
     @RequestMapping("/findAll.do")
-    public ModelAndView findAll() throws Exception {
+    public ModelAndView findAll(@RequestParam(value = "page", required = true, defaultValue = "1") Integer page,
+                                @RequestParam(value = "pageSize", required = true, defaultValue = "3") Integer size) throws Exception {
         ModelAndView mv = new ModelAndView();
 
-        List<Product> products = productService.findAll();
+        List<Product> products = productService.findAll(page, size);
 
+        PageInfo pageInfo = new PageInfo(products);
+        mv.addObject("pageInfo", pageInfo);
         mv.addObject("productList",products);
         mv.setViewName("product-list");
         return mv;

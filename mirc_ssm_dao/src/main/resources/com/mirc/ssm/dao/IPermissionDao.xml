@@ -18,4 +18,23 @@
         INSERT INTO permission(permissionName, url) VALUES (#{permissionName}, #{url})
     </select>
 
+
+    <!--权限详情-->
+    <resultMap id="permissionMap" type="permission">
+        <id property="id" column="id"/>
+        <result property="permissionName" column="permissionName" />
+        <result property="url" column="url"/>
+        <collection property="roles" column="id" javaType="java.util.List" ofType="Role"
+                    select="com.mirc.ssm.dao.IRoleDao.findRoleByPermissionId"/>
+    </resultMap>
+
+    <select id="findById" parameterType="string" resultMap="permissionMap">
+        SELECT * FROM PERMISSION WHERE id=#{id}
+    </select>
+
+    <!--删除权限-->
+    <select id="deletePermission" parameterType="string">
+        DELETE FROM PERMISSION WHERE id=#{permissionId}
+    </select>
+
 </mapper>

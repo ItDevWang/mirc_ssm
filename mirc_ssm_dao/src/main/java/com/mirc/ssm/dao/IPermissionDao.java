@@ -30,5 +30,17 @@ public interface IPermissionDao {
     void save(Permission permission) throws Exception;
 
 
+    /**
+     * 权限详情
+     * @param permissionId
+     * @return
+     */
+    Permission findById(String permissionId) throws Exception;
 
+    /**
+     * 删除权限
+     * @param permissionId
+     * @throws Exception
+     */
+    void deletePermission(String permissionId) throws Exception;
 }
